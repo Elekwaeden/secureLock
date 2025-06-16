@@ -1,5 +1,4 @@
 # Entry point for SecureLock
-
 from auth.facial import authenticate_face
 from auth.fingerprint import authenticate_fingerprint
 from auth.otp import send_otp, verify_otp
