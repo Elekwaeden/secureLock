@@ -1,88 +1,78 @@
 import face_recognition
 import cv2
-import os
 import numpy as np
-from PIL import Image
+import os
 import time
+from colorama import Fore
 
 def authenticate_face():
-    print("📷 Starting facial recognition...")
-
-    # Path to the known face image
-    known_face_path = os.path.join(os.path.dirname(__file__), "known_face.jpg")
-    if not os.path.exists(known_face_path):
-        print("❌ known_face.jpg not found in auth folder.")
-        return False
-
-    known_image = cv2.imread(known_face_path)
-    if known_image is None:
-        print("❌ Failed to load known_face.jpg.")
-        return False
-
-    # Ensure the image is in 8-bit unsigned integer format
-    if known_image.dtype != np.uint8:
-        print("❌ Image is not 8-bit per channel.")
-        return False
-
-    known_image = cv2.cvtColor(known_image, cv2.COLOR_BGR2RGB)
-
-    print(f"[DEBUG] Image shape: {known_image.shape}")
-    print(f"[DEBUG] Image dtype: {known_image.dtype}")
-
-    # Encode the known face
     try:
-        known_encodings = face_recognition.face_encodings(known_image)
-    except Exception as e:
-        print("🔥 Exception while encoding known face:", e)
-        return False
+        # Load known face
+        known_face_path = os.path.join(os.path.dirname(__file__), "known_face.jpg")
+        if not os.path.exists(known_face_path):
+            print(f"{Fore.RED}❌ No known face image found at {known_face_path}")
+            return False
 
-    if not known_encodings:
-        print("❌ No face detected in known image.")
-        return False
+        known_image = face_recognition.load_image_file(known_face_path)
+        known_image = cv2.cvtColor(known_image, cv2.COLOR_BGR2RGB)
 
-    known_encoding = known_encodings[0]
+        try:
+            known_encodings = face_recognition.face_encodings(known_image)
+            if not known_encodings:
+                print(f"{Fore.RED}❌ No face detected in the reference image.")
+                return False
+        except Exception as e:
+            print(f"{Fore.RED}❌ Exception while encoding known face: {e}")
+            return False
 
-    # Start webcam
-    video_capture = cv2.VideoCapture(0)
-    if not video_capture.isOpened():
-        print("❌ Could not open webcam.")
-        return False
+        known_encoding = known_encodings[0]
 
-    print("🕵️ Please look at the camera... scanning for 10 seconds...")
+        # Start webcam
+        video_capture = cv2.VideoCapture(0)
+        if not video_capture.isOpened():
+            print(f"{Fore.RED}❌ Could not access the webcam.")
+            return False
 
-    match_found = False 
-    start_time = time.time()
-    scan_duration = 10  # seconds
+        print(f"{Fore.YELLOW}📷 Scanning... Please look at the camera.")
+        time.sleep(1.5)
 
-    while time.time() - start_time < scan_duration:
-        ret, frame = video_capture.read()
-        if not ret:
-            break
+        result = False
+        timeout = time.time() + 10  # 10-second timeout
 
-        # Convert the frame to RGB
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        face_locations = face_recognition.face_locations(rgb_frame)
-        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
-
-        for encoding in face_encodings:
-            matches = face_recognition.compare_faces([known_encoding], encoding)
-            if matches[0]:
-                match_found = True
+        while time.time() < timeout:
+            ret, frame = video_capture.read()
+            if not ret:
+                print(f"{Fore.RED}⚠️ Failed to read from camera.")
                 break
 
-        if match_found:
-            break
+            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            face_locations = face_recognition.face_locations(rgb_frame)
+            face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
-    # Release webcam and close windows
-    video_capture.release()
-    cv2.destroyAllWindows()
+            for face_encoding in face_encodings:
+                match = face_recognition.compare_faces([known_encoding], face_encoding)[0]
+                if match:
+                    result = True
+                    break
 
-    if match_found:
-        print("✅ Face recognized! Access granted.")
-        return True
-    else:
-        print("❌ Face not recognized. Access denied.")
+            if result:
+                break
+
+        video_capture.release()
+        cv2.destroyAllWindows()
+
+        if result:
+            print(f"{Fore.GREEN}✅ Face match successful.")
+        else:
+            print(f"{Fore.RED}❌ Face not recognized or timeout reached.")
+
+        return result
+
+    except Exception as error:
+        print(f"{Fore.RED}❌ Unexpected error during facial authentication: {error}")
         return False
+
+
 
 
 # This function uses the face_recognition library to authenticate a user based on facial recognition.

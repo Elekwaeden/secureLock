@@ -2,36 +2,67 @@
 from auth.facial import authenticate_face
 from auth.fingerprint import authenticate_fingerprint
 from auth.otp import send_otp, verify_otp
+from colorama import Fore, Style, init
+import time
+import os
+
+init(autoreset=True)
+
+def display_welcome():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+    banner = f"""
+{Fore.CYAN}
+   ╔════════════════════════════════════════╗
+   ║                                        ║
+   ║    🔐  W E L C O M E   T O   S E C U R E L O C K  🔐    ║
+   ║                                        ║
+   ╚════════════════════════════════════════╝
+{Style.RESET_ALL}
+    """
+
+    tagline = f"{Fore.LIGHTWHITE_EX}Your digital gatekeeper. Choose your security method wisely."
+    print(banner)
+    print(tagline)
+    time.sleep(1.5)
 
 def main():
-    print("=== Welcome to SecureLock ===")
-    print("Please choose a second authentication method:")
-    print("1. Facial Recognition")
-    print("2. Fingerprint Scan")
-    print("3. One-Time Password (OTP)\n")
-    
+    display_welcome()
+
+    print("\nPlease choose a second authentication method:")
+    print("1. Facial Recognition 📷")
+    print("2. Fingerprint Scan 🖐️")
+    print("3. One-Time Password (OTP) 🔑\n")
+
     choice = input("Enter your choice (1/2/3): ").strip()
+    ...
+
+
+    print(f"{Fore.MAGENTA}\n🔄 Initializing authentication sequence...\n")
+    time.sleep(1.2)
 
     authenticated = False
 
     if choice == "1":
-        print("\n[Facial Recognition Selected]")
+        print(f"{Fore.CYAN}[Facial Recognition Selected] 📷 Starting facial recognition...\n")
         authenticated = authenticate_face()
     elif choice == "2":
-        print("\n[Fingerprint Scan Selected]")
+        print(f"{Fore.CYAN}[Fingerprint Scan Selected] ✋ Initiating fingerprint scan...\n")
         authenticated = authenticate_fingerprint()
     elif choice == "3":
-        print("\n[OTP Verification Selected]")
+        print(f"{Fore.CYAN}[OTP Selected] 🔑 Generating your One-Time Password...\n")
         send_otp()
         authenticated = verify_otp()
     else:
-        print("Invalid choice. Please restart the program.")
+        print(f"{Fore.RED}❌ Invalid choice. Please restart the program.")
+        return
+
+    time.sleep(1)
 
     if authenticated:
-        print("\n✅ Access granted. You may now continue securely.")
-        # TODO: Add optional functionality here (e.g., file/text processing)
+        print(f"{Fore.GREEN}\n✅ Access granted. Welcome aboard!")
     else:
-        print("\n❌ Authentication failed. Access denied.")
+        print(f"{Fore.RED}\n❌ Authentication failed. Please try again.")
 
 if __name__ == "__main__":
     main()
