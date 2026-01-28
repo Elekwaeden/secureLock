@@ -1,0 +1,100 @@
+{
+  "name": "SecureLock - Multi-Factor Authentication",
+  "short_name": "SecureLock",
+  "description": "Advanced biometric and OTP authentication system featuring facial recognition, fingerprint scanning, and one-time passwords",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00ffff",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/screenshots/screenshot-540x720.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/static/screenshots/screenshot-1280x720.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "categories": ["security", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Facial Recognition",
+      "short_name": "Face Auth",
+      "description": "Start facial recognition authentication",
+      "url": "/authenticate/face",
+      "icons": [
+        {
+          "src": "/static/icons/face-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Fingerprint Scan",
+      "short_name": "Fingerprint",
+      "description": "Start fingerprint scan authentication",
+      "url": "/authenticate/fingerprint",
+      "icons": [
+        {
+          "src": "/static/icons/fingerprint-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "One-Time Password",
+      "short_name": "OTP",
+      "description": "Start OTP authentication",
+      "url": "/authenticate/otp",
+      "icons": [
+        {
+          "src": "/static/icons/otp-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

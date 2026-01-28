@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter OTP - SecureLock</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Enter Your OTP</h1>
+        <p>Check your email for the One-Time Password.</p>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <div class="auth-process">
+            <form action="{{ url_for('enter_otp') }}" method="post">
+                <input type="text" name="otp_code" placeholder="Enter 6-digit OTP" required maxlength="6">
+                <button type="submit" class="auth-button otp">Verify OTP</button>
+            </form>
+        </div>
+        <a href="{{ url_for('auth_page', method='otp') }}" class="back-link">← Resend OTP</a>
+    </div>
+</body>
+</html>
